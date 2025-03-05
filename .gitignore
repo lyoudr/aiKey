@@ -1,0 +1,6 @@
+*_venv
+**__pycache__
+*.env
+*.json
+beam-temp-output_data*
+output_data*
