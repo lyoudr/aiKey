@@ -1,6 +1,5 @@
 from apache_beam.options.pipeline_options import PipelineOptions
 from google.cloud import secretmanager
-from sqlalchemy import create_engine, text
 from datetime import datetime
 import apache_beam as beam
 import csv 
@@ -95,8 +94,9 @@ def run_pipeline(gcs_path: str, save_main_session=True):
          | 'Sum Costs' >> beam.MapTuple(sum_costs)
          | 'Write to GCS' >> beam.io.WriteToText(
             f'gs://{GCS_BUCKET}/output/medical_service_results_',  # The output path in GCS
-            shard_name_template='-SS-of-NN',  # Optional, for sharding the output files
-            file_name_suffix='.csv',  # Optional, for output file extension (CSV, JSON, etc.)
+            file_name_suffix='.csv',  # Ensure the file has a .csv extension
+            shard_name_template='',  # Disable sharding
+            num_shards=1  # Force a single output file
          )
         )
 

@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 from typing import List
 
-from models.database import get_db
-from models.medical import Patient
+from src.models.database import get_db
+from src.models.medical import Patient
 
 def batch_insert(data: list):
     db = next(get_db())

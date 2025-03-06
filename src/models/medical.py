@@ -12,7 +12,7 @@ from sqlalchemy import (
     DECIMAL,
     UniqueConstraint,
 )
-from models.database import Base
+from src.models.database import Base
 
 
 class Patient(Base):

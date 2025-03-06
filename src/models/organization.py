@@ -7,7 +7,7 @@ from sqlalchemy import (
     func
 )
 
-from models.database import Base
+from src.models.database import Base
 
 
 class Hospital(Base):

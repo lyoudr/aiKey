@@ -6,9 +6,10 @@ from sqlalchemy import pool
 from alembic import context
 from dotenv import load_dotenv
 
-from app.models.database import Base
-from app.core.config import *
+from src.models.database import Base
+from src.core.config import *
 
+import os
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -28,12 +29,16 @@ config = context.config
 # This line sets up loggers basically.
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
-    db_port = os.environ.get('DB_PORT')
-    db_host = os.environ.get('DB_HOST')
-    db_username = os.environ.get('DB_USERNAME')
-    db_password = os.environ.get('DB_PASSWORD')
-    db_name = os.environ.get('DB_NAME')
-    url = f"postgresql+psycopg2://{db_username}:{db_password}@{db_host}:{db_port}/{db_name}"
+    db_username = os.getenv("DB_USER")
+    db_password = os.getenv("DB_PASS")
+    db_host = os.getenv("DB_HOST")
+    db_name = os.getenv("DB_NAME")
+    db_instance = os.getenv("DB_INSTANCE")
+    # url = f"postgresql+psycopg2://{db_username}:{db_password}@{db_host}:{db_port}/{db_name}"
+    if os.getenv("ENV") == "local":
+        url = f"postgresql+psycopg2://{db_username}:{db_password}@{db_host}:5432/{db_name}"
+    else:
+        url = f"postgresql+psycopg2://{db_username}:{db_password}@/cloudsql/{db_instance}/{db_name}"
     config.set_main_option("sqlalchemy.url", url)
 
 # add your model's MetaData object here

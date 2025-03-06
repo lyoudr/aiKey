@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from typing import List
 
-from models.database import get_db
-from schemas.patient import PatientBase
-from repositories import patient_repository
+from src.models.database import get_db
+from src.schemas.patient import PatientBase
+from src.repositories import patient_repository
 
 
 router = APIRouter(tags=["patient"], prefix="/patients")

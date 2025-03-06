@@ -1,6 +1,6 @@
 from datetime import date
 
-from repositories import patient_repository
+from src.repositories import patient_repository
 
 def seed():
     # Sample data for the patients

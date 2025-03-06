@@ -9,7 +9,7 @@ from sqlalchemy import (
     func,
 )
 from sqlalchemy.orm import relationship
-from models.database import Base
+from src.models.database import Base
 
 role_permission = Table(
     "role_permission",

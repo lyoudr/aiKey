@@ -3,9 +3,10 @@ import os
 
 from fastapi import FastAPI
 
-from routes import user
-from routes import patient
-from routes import medical
+from src.routes import user
+from src.routes import patient
+from src.routes import medical
+from src.routes import process
 
 app = FastAPI(
     title=f"FastAPI",
@@ -19,3 +20,4 @@ app = FastAPI(
 app.include_router(user.router)
 app.include_router(patient.router)
 app.include_router(medical.router)
+app.include_router(process.router)

@@ -2,7 +2,7 @@ from sqlalchemy import desc
 from sqlalchemy.orm import Session
 from typing import List 
 
-from models.medical import MedicalRecord
+from src.models.medical import MedicalRecord
 
 
 def get_medical_record(db: Session, record_id: int) -> MedicalRecord:

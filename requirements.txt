@@ -46,3 +46,5 @@ google-resumable-media==2.7.2
 googleapis-common-protos==1.69.0
 grpc-google-iam-v1==0.14.1
 keyrings.google-artifactregistry-auth==1.1.2
+functions-framework==3.8.2
+cloud-sql-python-connector==1.17.0
