@@ -6,6 +6,7 @@ from src.models.database import get_db
 from src.schemas.medical import MedicalRecordBase
 from src.repositories import medical_repository
 
+
 router = APIRouter(tags=["medical"], prefix="/medicals")
 
 

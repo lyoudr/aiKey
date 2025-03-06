@@ -2,7 +2,14 @@ from sqlalchemy import desc
 from sqlalchemy.orm import Session
 from typing import List 
 
+from src.models.database import get_db
 from src.models.medical import MedicalRecord
+
+
+def batch_insert(data: list):
+    db = next(get_db())
+    db.bulk_insert_mappings(MedicalRecord, data)
+    db.commit()
 
 
 def get_medical_record(db: Session, record_id: int) -> MedicalRecord:
