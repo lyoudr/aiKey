@@ -4,7 +4,10 @@ import base64
 
 from src.utils.write_to_db import write_to_db
 
-router = APIRouter(tags=["process"], prefix="/process")
+router = APIRouter(
+    tags=["process"], 
+    prefix="/process"
+)
 
 @router.post("/")
 async def receive_pubsub(request: Request):
@@ -30,7 +33,6 @@ async def receive_pubsub(request: Request):
         decoded_message = json.loads(
             base64.b64decode(pubsub_message["data"]).decode("utf-8")
         )
-        print("decoded_message is ->", decoded_message)
         bucket_name = decoded_message["bucket"]
         file_name = decoded_message["name"]
 

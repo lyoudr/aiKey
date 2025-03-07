@@ -6,7 +6,7 @@ from src.core.config import get_settings
 
 settings = get_settings()
 
-def write_to_db(bucket_name: str, file_name: str):
+async def write_to_db(bucket_name: str, file_name: str):
     """
     Reads the file from Cloud Storage and writes to Cloud SQL
     Processes only files inside `output/` folder.
