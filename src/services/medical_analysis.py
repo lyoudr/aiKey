@@ -93,7 +93,7 @@ def run_pipeline(gcs_path: str, save_main_session=True):
          | 'Group by Patient and Month' >> beam.GroupByKey()
          | 'Sum Costs' >> beam.MapTuple(sum_costs)
          | 'Write to GCS' >> beam.io.WriteToText(
-            f'gs://{GCS_BUCKET}/output/medical_service_results_',  # The output path in GCS
+            f'gs://{GCS_BUCKET}/output/medical_service_results',  # The output path in GCS
             file_name_suffix='.csv',  # Ensure the file has a .csv extension
             shard_name_template='',  # Disable sharding
             num_shards=1  # Force a single output file

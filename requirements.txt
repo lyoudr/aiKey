@@ -20,6 +20,7 @@ redis==5.2.1
 # Google 
 google-api-core==2.24.1
 google-apitools==0.5.31
+google-api-python-client==2.163.0
 google-auth==2.38.0
 google-auth-httplib2==0.2.0
 google-cloud-aiplatform==1.82.0
@@ -43,7 +44,5 @@ google-crc32c==1.6.0
 google-resumable-media==2.7.2
 googleapis-common-protos==1.69.0
 grpc-google-iam-v1==0.14.1
-keyrings.google-artifactregistry-auth==1.1.2
-cloud-sql-python-connector==1.17.0
 gcloud-aio-auth==5.3.2
 gcloud-aio-storage==9.3.0

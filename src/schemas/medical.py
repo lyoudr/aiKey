@@ -21,3 +21,6 @@ class MedicalRecordBase(BaseModel):
         if isinstance(record_dict.get("record_date"), date):
             record_dict["record_date"] = record_dict["record_date"].isoformat()
         return record_dict
+
+class MedicalAnalysisResponse(BaseModel):
+    status: str

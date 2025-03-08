@@ -5,7 +5,7 @@ WORKDIR /app
 COPY requirements.txt requirements.txt
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt 
-RUN  pip install "cloud-sql-python-connector[pg8000]"
+RUN  pip install "apache-beam[gcp]"
 
 COPY . .
 

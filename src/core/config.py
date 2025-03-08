@@ -32,7 +32,9 @@ class Settings(BaseSettings):
     DB_PORT: str = get_env("DB_PORT")
     DB_INSTANCE: str = get_env("DB_INSTANCE")
     SECRET_KEY: str = get_env("SECRET_KEY")
-
+    GCS_BUCKET: str = get_env("GCS_BUCKET")
+    REGION: str = get_env("REGION")
+    
     class Config:
         env_file = ".env"
 
