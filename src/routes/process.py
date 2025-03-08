@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, HTTPException
+from fastapi import APIRouter, Request, HTTPException, status
 import json
 import base64
 
@@ -30,11 +30,17 @@ async def receive_pubsub(request: Request):
     
     
     if isinstance(pubsub_message, dict) and "data" in pubsub_message:
-        decoded_message = json.loads(
-            base64.b64decode(pubsub_message["data"]).decode("utf-8")
-        )
-        bucket_name = decoded_message["bucket"]
-        file_name = decoded_message["name"]
+        try:
+            decoded_message = json.loads(
+                base64.b64decode(pubsub_message["data"]).decode("utf-8")
+            )
+            bucket_name = decoded_message["bucket"]
+            file_name = decoded_message["name"]
 
-        print(f"Received file event: {file_name} in {bucket_name}")
-        write_to_db(bucket_name, file_name)
+            print(f"Received file event: {file_name} in {bucket_name}")
+            await write_to_db(bucket_name, file_name)
+        except (json.JSONDecodeError, KeyError, TypeError) as e:
+            msg = f"Error processing message data: {str(e)}"
+            print(f"error: {msg}")
+            raise HTTPException(status_code=400, detail=msg)
+    return {"message": "Process data successfully."}, status.HTTP_200_OK

@@ -8,7 +8,9 @@ from sqlalchemy import (
     func,
 )
 from src.models.database import Base
+from passlib.context import CryptContext
 
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class User(Base):
     __tablename__ = "user"
@@ -27,5 +29,6 @@ class User(Base):
         ForeignKey("organization.id", ondelete="SET NULL"),
         nullable=True
     )
+    hashed_password = Column(String, nullable=False)
     created_time = Column(DateTime, server_default=func.now())
     updated_time = Column(DateTime, server_default=func.now(), onupdate=func.now())

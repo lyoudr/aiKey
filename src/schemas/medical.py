@@ -14,3 +14,10 @@ class MedicalRecordBase(BaseModel):
 
     class Config:
         orm_mode = True
+    
+    # Override the dict method to convert the date to string 
+    def dict(self, **kwargs):
+        record_dict = super().dict(**kwargs)
+        if isinstance(record_dict.get("record_date"), date):
+            record_dict["record_date"] = record_dict["record_date"].isoformat()
+        return record_dict

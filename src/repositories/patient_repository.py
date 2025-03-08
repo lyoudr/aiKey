@@ -1,3 +1,4 @@
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
 
@@ -13,7 +14,10 @@ def batch_insert(data: list):
 def get_patient(db: Session, patient_id: int) -> Patient:
     patient = db.query(Patient).filter(Patient.id == patient_id).first()
     if not patient:
-        raise Exception 
+        raise HTTPException(
+            detail=f"Patient not found {patient_id}",
+            status_code=status.HTTP_404_NOT_FOUND
+        )
     return patient
 
 

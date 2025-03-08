@@ -34,7 +34,6 @@ if config.config_file_name is not None:
     db_host = os.getenv("DB_HOST")
     db_name = os.getenv("DB_NAME")
     db_instance = os.getenv("DB_INSTANCE")
-    # url = f"postgresql+psycopg2://{db_username}:{db_password}@{db_host}:{db_port}/{db_name}"
     if os.getenv("ENV") == "local":
         url = f"postgresql+psycopg2://{db_username}:{db_password}@{db_host}:5432/{db_name}"
     else:

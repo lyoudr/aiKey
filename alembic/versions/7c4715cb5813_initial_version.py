@@ -1,8 +1,8 @@
-"""init db
+"""initial version
 
-Revision ID: daad115c7649
+Revision ID: 7c4715cb5813
 Revises: 
-Create Date: 2025-03-04 08:43:44.512650
+Create Date: 2025-03-08 10:53:48.121442
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'daad115c7649'
+revision: str = '7c4715cb5813'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -68,6 +68,7 @@ def upgrade() -> None:
     sa.Column('diagnosis', sa.String(length=255), nullable=False),
     sa.Column('treatment', sa.String(length=255), nullable=True),
     sa.Column('prescription', sa.String(length=255), nullable=True),
+    sa.Column('cost', sa.DECIMAL(precision=65, scale=2), nullable=True),
     sa.Column('notes', sa.Text(), nullable=True),
     sa.Column('created_time', sa.DateTime(), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_time', sa.DateTime(), server_default=sa.text('now()'), nullable=True),
@@ -86,6 +87,19 @@ def upgrade() -> None:
     sa.UniqueConstraint('name')
     )
     op.create_index(op.f('ix_organization_id'), 'organization', ['id'], unique=False)
+    op.create_table('patient_cost',
+    sa.Column('id', sa.BigInteger(), nullable=False),
+    sa.Column('patient_id', sa.BigInteger(), nullable=False),
+    sa.Column('month', sa.String(length=7), nullable=False),
+    sa.Column('total_cost', sa.DECIMAL(precision=10, scale=2), nullable=False),
+    sa.Column('created_time', sa.DateTime(), server_default=sa.text('now()'), nullable=True),
+    sa.Column('updated_time', sa.DateTime(), server_default=sa.text('now()'), nullable=True),
+    sa.ForeignKeyConstraint(['patient_id'], ['patient.id'], ),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('patient_id', 'month', name='unique_patient_month')
+    )
+    op.create_index(op.f('ix_patient_cost_id'), 'patient_cost', ['id'], unique=False)
+    op.create_index(op.f('ix_patient_cost_patient_id'), 'patient_cost', ['patient_id'], unique=False)
     op.create_table('role_permission',
     sa.Column('role_id', sa.Integer(), nullable=False),
     sa.Column('permission_id', sa.Integer(), nullable=False),
@@ -100,6 +114,7 @@ def upgrade() -> None:
     sa.Column('user_type', sa.Enum('AIPHAS', 'DOCTOR', name='user_type_enum'), nullable=False),
     sa.Column('role_id', sa.BigInteger(), nullable=True),
     sa.Column('organization_id', sa.BigInteger(), nullable=True),
+    sa.Column('hashed_password', sa.String(), nullable=False),
     sa.Column('created_time', sa.DateTime(), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_time', sa.DateTime(), server_default=sa.text('now()'), nullable=True),
     sa.ForeignKeyConstraint(['organization_id'], ['organization.id'], ondelete='SET NULL'),
@@ -116,6 +131,9 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_user_id'), table_name='user')
     op.drop_table('user')
     op.drop_table('role_permission')
+    op.drop_index(op.f('ix_patient_cost_patient_id'), table_name='patient_cost')
+    op.drop_index(op.f('ix_patient_cost_id'), table_name='patient_cost')
+    op.drop_table('patient_cost')
     op.drop_index(op.f('ix_organization_id'), table_name='organization')
     op.drop_table('organization')
     op.drop_index(op.f('ix_medical_record_id'), table_name='medical_record')

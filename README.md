@@ -13,6 +13,8 @@
 - DataPipeline
     - Apache Beam
     - DataFlow
+- Cache
+    - Redis
 
 ## Build Service
 ---
