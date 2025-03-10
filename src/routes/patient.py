@@ -4,7 +4,7 @@ from typing import List
 
 from src.models.database import get_db
 from src.models.user import User
-from src.schemas.patient import PatientBase
+from src.schemas.patient import PatientBase, PatientCostBase
 from src.repositories import patient_repository
 from src.utils.authenticate import get_current_user, RoleChecker
 from src.utils.decorator import cache_response
@@ -27,7 +27,7 @@ def list_patients(
 
 
 @router.get(
-    "/{patient_id}",
+    "/info/{patient_id}",
     summary="Get patient by id.", 
     response_model=PatientBase
 )
@@ -39,3 +39,17 @@ def get_patient(
 ):
     patient = patient_repository.get_patient(db, patient_id)
     return patient
+
+
+@router.get(
+    "/cost",
+    summary="List patient cost",
+    response_model=List[PatientCostBase]
+)
+def patient_cost(
+    db: Session = Depends(get_db),
+    role: bool = Depends(RoleChecker(['ADMIN', 'DOCTOR'])),
+    user: User = Depends(get_current_user)
+):
+    patient_costs = patient_repository.list_patient_cost(db)
+    return [PatientCostBase(**dict(row._mapping)) for row in patient_costs]

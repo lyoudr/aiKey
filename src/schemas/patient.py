@@ -1,7 +1,7 @@
 from pydantic import BaseModel
-from datetime import date
+from datetime import date, datetime
 from typing import Optional
-
+from decimal import Decimal
 
 
 class PatientBase(BaseModel):
@@ -23,3 +23,17 @@ class PatientBase(BaseModel):
         if isinstance(record_dict.get("date_of_birth"), date):
             record_dict["date_of_birth"] = record_dict["date_of_birth"].isoformat()
         return record_dict
+
+class PatientCostBase(BaseModel):
+    patient_id: int
+    patient_name: str
+    gender: str 
+    month: str 
+    cost: Decimal
+    updated_time: datetime
+
+    class Config:
+        # Customize datetime serialization format
+        json_encoders = {
+            datetime: lambda v: v.strftime("%Y-%m-%d %H-%M-%S")
+        }

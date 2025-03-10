@@ -1,10 +1,12 @@
 from fastapi import status, HTTPException
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
 from typing import List 
 
 from src.models.database import get_db
 from src.models.medical import MedicalRecord
+from src.schemas.medical import MedicalRecordBase
 
 def batch_insert(data: list):
     db = next(get_db())
@@ -30,3 +32,27 @@ def list_medical_record(db: Session, patient_id: int) -> List:
     ).order_by(
         desc(MedicalRecord.updated_time)
     ).all()
+
+
+def create_medical_record(db: Session, payload: MedicalRecordBase):
+    try:
+        new_record = MedicalRecord(
+            patient_id=payload.patient_id,
+            record_date=payload.record_date,
+            diagnosis=payload.diagnosis,
+            treatment=payload.treatment,
+            prescription=payload.prescription,
+            cost=payload.cost,
+            notes=payload.notes,
+        )
+        db.add(new_record)
+        db.commit()
+        db.refresh(new_record)  # Fetch updated values like ID and timestamps
+
+        return new_record
+    except SQLAlchemyError as e:
+        db.rollback()  
+        raise HTTPException(
+            detail=f"Create medical record error: {e}",
+            status_code=status.HTTP_400_BAD_REQUEST,
+        )

@@ -2,7 +2,6 @@ from pydantic import BaseModel
 from datetime import date 
 from typing import Optional
 
-
 class MedicalRecordBase(BaseModel):
     patient_id: int
     record_date: date
@@ -22,5 +21,8 @@ class MedicalRecordBase(BaseModel):
             record_dict["record_date"] = record_dict["record_date"].isoformat()
         return record_dict
 
+
 class MedicalAnalysisResponse(BaseModel):
     status: str
+
+

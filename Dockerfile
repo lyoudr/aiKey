@@ -5,7 +5,7 @@ WORKDIR /app
 COPY requirements.txt requirements.txt
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt 
-RUN  pip install "apache-beam[gcp]"
+RUN  pip install "apache-beam[gcp]" "pg8000"
 
 COPY . .
 

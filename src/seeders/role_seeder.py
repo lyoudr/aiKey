@@ -8,8 +8,8 @@ def seed_roles_and_permissions():
 
     # Sample roles
     roles = [
-        {"name": "Admin"},
-        {"name": "Doctor"}
+        {"name": "ADMIN"},
+        {"name": "DOCTOR"}
     ]
     
     # Sample permissions

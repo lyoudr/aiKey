@@ -34,7 +34,8 @@ class Settings(BaseSettings):
     SECRET_KEY: str = get_env("SECRET_KEY")
     GCS_BUCKET: str = get_env("GCS_BUCKET")
     REGION: str = get_env("REGION")
-    
+    GCP_PROJECT_ID: str = get_env("GCP_PROJECT_ID")
+
     class Config:
         env_file = ".env"
 
@@ -50,7 +51,7 @@ def get_redis():
     global redis_client
     if redis_client is None:
         redis_client = redis.StrictRedis(
-            host='localhost',
+            host=get_env("REDIS_HOST"),
             port=6379,
             db=0
         )

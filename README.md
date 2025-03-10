@@ -1,5 +1,14 @@
 # aiKey - Medical Platform for doctor use
 
+## Introduction
+---
+This platform allows doctors to access patient records across various systems. We assume that patient medical data comes from multiple platforms, with a large volume of records stored in cloud storage. To process and organize this data, we use Cloud Scheduler to trigger a data pipeline in DataFlow, which then stores the structured results in Cloud SQL.
+
+The platform supports two user roles: "AIPHAS" and "DOCTOR." Role-based access control ensures that users with different roles can access distinct APIs. This setup allows AIPHAS employees to manage user accounts, while doctors can view patient data.
+
+To improve data retrieval efficiency, we utilize Redis as a cache.
+
+
 ## Tools Used
 ---
 - FrameWork
@@ -15,6 +24,37 @@
     - DataFlow
 - Cache
     - Redis
+- CronJob
+    - Cloud Scheduler
+
+
+## Start the project
+Create virtual environment
+```
+python3.11 -m venv ai_venv
+```
+Activate virtual environment
+```
+source ai_venv/bin/activate
+```
+Install required pacakges
+```
+pip install -r requirements.txt
+```
+Start the application
+```
+uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+## DataBase Migration
+```
+alembic upgrade head
+```
+
+## Seed Initial Data
+```
+python seed_data.py
+```
 
 ## Build Service
 ---
@@ -67,6 +107,30 @@ gcloud auth configure-docker asia-east1-docker.pkg.dev
 gcloud builds submit --tag asia-east1-docker.pkg.dev/YOUR_PROJECT_ID/ann-repo/ai-key:latest
 ```
 
+- Add Push Subscription
+```
+gcloud pubsub subscriptions create medical-analysis-sub \
+--topic=medical-analysis \
+--push-endpoint=$CLOUD_RUN_URL/process/ \
+--push-auth-service-account=$SERVICE_ACCOUNT
+```
+
+- Create Redis Instance
+```
+gcloud redis instances create my-redis \
+--size=1 \
+--region=us-central1 \
+--network=default
+```
+
+- Set up Serverless VPC Access Connector
+```
+gcloud compute networks vpc-access connectors create my-connector \
+--region=us-central1 \
+--network=default \
+--range=10.8.0.0/28
+```
+
 - Deploy to Cloud Run
 ```
 gcloud run deploy aikey \
@@ -75,13 +139,18 @@ gcloud run deploy aikey \
 --region asia-east1 \
 --allow-unauthenticated \
 --set-env-vars DB_USER=$DB_USER,DB_PASS=$DB_PASS,DB_NAME=$DB_NAME,DB_INSTANCE=$DB_INSTANCE,DB_SOCKET_PATH=/cloudsql/<instance_connection_url> \
---add-cloudsql-instances=<instance_connection_url>
+--add-cloudsql-instances=<instance_connection_url> \
+--vpc-connector=ann-connector
 ```
 
-- Add Push Subscription
+- Create Cloud Scheduler to get medical record periodically
 ```
-gcloud pubsub subscriptions create medical-analysis-sub \
---topic=medical-analysis \
---push-endpoint=$CLOUD_RUN_URL/process/ \
---push-auth-service-account=$SERVICE_ACCOUNT
+gcloud scheduler jobs create http your-job-name \
+  --schedule "0 1 * * *" \
+  --time-zone "Asia/Taipei" \
+  --uri "https://your-cloud-run-url" \
+  --http-method POST \
+  --oidc-service-account-email "your-service-account@your-project.iam.gserviceaccount.com" \
+  --oidc-token-audience "https://your-cloud-run-url" \
+  --description "Daily job to trigger the Cloud Run service"
 ```

@@ -1,3 +1,5 @@
+from google.auth.transport import requests as google_requests
+from google.oauth2 import id_token
 from fastapi import Security, Depends, status, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
@@ -110,4 +112,45 @@ class RoleChecker:
             detail="Insufficient permission",
             status_code=status.HTTP_403_FORBIDDEN,
         )
-    
+
+
+class BaseAuth:
+    def __init__(self):
+        pass
+
+    def _check(
+        self, credential: HTTPAuthorizationCredentials = Depends(HTTPBearer())
+    ) -> str:
+        if credential is None:
+            raise AuthException(
+                error_msg="authorization need to set",
+                error_detail="authorization need to set",
+            )
+
+        return credential.credentials
+
+class ServiceAuth(BaseAuth):
+
+    def __init__(
+        self,
+        audience: str = f"{settings.GCP_PROJECT_ID}"
+    ):
+        super().__init__()
+        self.audience = audience
+
+    def __call__(
+        self,
+        credential: HTTPAuthorizationCredentials = Depends(HTTPBearer()),
+    ) -> bool:
+        token = self._check(credential)
+        try:
+            id_token.verify_oauth2_token(
+                token, google_requests.Request(), self.audience
+            )
+        except ValueError as e:
+            raise HTTPException(
+                detail="token verify error",
+                status_code=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        return True

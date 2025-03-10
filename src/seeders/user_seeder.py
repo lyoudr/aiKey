@@ -21,7 +21,7 @@ def seed_users():
             "name": "Admin",
             "email": "aiphas@example.com",
             "user_type": "AIPHAS",
-            "role_id": roles.get("Admin"),
+            "role_id": roles.get("ADMIN"),
             "organization_id": None,
             "hashed_password": hashed_pass
         },
@@ -29,7 +29,7 @@ def seed_users():
             "name": "Dr. Bob",
             "email": "bob.doctor@example.com",
             "user_type": "DOCTOR",
-            "role_id": roles.get("Doctor"),
+            "role_id": roles.get("DOCTOR"),
             "organization_id": organizations.get("Cardiology"),
             "hashed_password": hashed_pass
         },
@@ -37,7 +37,7 @@ def seed_users():
             "name": "Dr. Nancy",
             "email": "nancy.doctor@example.com",
             "user_type": "DOCTOR",
-            "role_id": roles.get("Doctor"),
+            "role_id": roles.get("DOCTOR"),
             "organization_id": organizations.get("Neurology"),
             "hashed_password": hashed_pass
         },
@@ -45,7 +45,7 @@ def seed_users():
             "name": "Dr. Tom",
             "email": "tom.doctor@example.com",
             "user_type": "DOCTOR",
-            "role_id": roles.get("Doctor"),
+            "role_id": roles.get("DOCTOR"),
             "organization_id": organizations.get("Oncology"),
             "hashed_password": hashed_pass
         }
