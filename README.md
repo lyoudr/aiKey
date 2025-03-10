@@ -8,7 +8,7 @@ The platform supports two user roles: "AIPHAS" and "DOCTOR." Role-based access c
 To improve data retrieval efficiency, we utilize Redis as a cache.
 
 ## Data Flow
-![Architecture]
+![Architecture](https://github.com/lyoudr/aiKey/blob/main/diagram.png)
 
 
 ## Tools Used
