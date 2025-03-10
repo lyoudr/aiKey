@@ -1,16 +1,17 @@
-# aiKey - Medical Platform for doctor use
+# aiKey - Medical Platform For Doctor Use
 
 ## Introduction
----
 This platform allows doctors to access patient records across various systems. We assume that patient medical data comes from multiple platforms, with a large volume of records stored in cloud storage. To process and organize this data, we use Cloud Scheduler to trigger a data pipeline in DataFlow, which then stores the structured results in Cloud SQL.
 
 The platform supports two user roles: "AIPHAS" and "DOCTOR." Role-based access control ensures that users with different roles can access distinct APIs. This setup allows AIPHAS employees to manage user accounts, while doctors can view patient data.
 
 To improve data retrieval efficiency, we utilize Redis as a cache.
 
+## Data Flow
+![Architecture]
+
 
 ## Tools Used
----
 - FrameWork
     - FastAPI
 - DataBase 
@@ -57,7 +58,6 @@ python seed_data.py
 ```
 
 ## Build Service
----
 - Create a DataFlow Classic Template
     -  requirements.txt should be in the same folder as medical_analysis.py 
 ```
