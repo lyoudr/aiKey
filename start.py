@@ -1,8 +1,7 @@
 import sys
 import uvicorn
 
-
-def start_app(port: int):
+def start_app(port: int=8000):
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
@@ -15,4 +14,4 @@ def start_app(port: int):
 
 if __name__ == "__main__":
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 8000
-    start_app(port=port)
+    start_app(port)

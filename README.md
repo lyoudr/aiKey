@@ -9,7 +9,7 @@ To improve data retrieval efficiency, we utilize Redis as a cache.
 
 ## Data Flow
 ![Architecture](https://github.com/lyoudr/aiKey/blob/main/diagram.png)
-
+![Architecture]()
 
 ## Tools Used
 - FrameWork
@@ -27,7 +27,7 @@ To improve data retrieval efficiency, we utilize Redis as a cache.
     - Redis
 - CronJob
     - Cloud Scheduler
-
+- WebSocket
 
 ## Start the project
 Create virtual environment
@@ -46,10 +46,57 @@ Start the application
 ```
 uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
 ```
+See API document in 
+http://127.0.0.1:8000/docs
 
 ## DataBase Migration
 ```
 alembic upgrade head
+```
+
+## DataBase Trigger for instant data display 
+Create a Trigger Function
+```
+CREATE OR REPLACE FUNCTION notify_new_data() RETURNS TRIGGER AS $$
+BEGIN
+    PERFORM pg_notify('new_data_channel', row_to_json(NEW)::text);
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql; 
+```
+
+Create Trigger for `patient_cost` Table
+```
+CREATE TRIGGER new_data_trigger
+AFTER INSERT ON patient_cost
+FOR EACH ROW
+EXECUTE FUNCTION notify_new_data();
+```
+
+Listen to database event
+```
+async def listen_for_db_notification():
+    """Listen for PostgreSQL notifications and push to WebSocket clients."""
+    if os.getenv("ENV") == "local":
+        dsn = f"postgresql://{settings.DB_USER}:{settings.DB_PASS}@localhost/{settings.DB_NAME}"
+    else:
+        dsn = f"postgresql://{settings.DB_USER}:{settings.DB_PASS}@/{settings.DB_NAME}?host=/cloudsql/{settings.DB_INSTANCE}"
+    
+    conn = psycopg2.connect(dsn)
+    conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
+
+    cursor = conn.cursor()
+    cursor.execute("LISTEN new_data_channel;")
+    logger.info("Listening for new data...")
+
+    while True:
+        select.select([conn], [], [])
+        conn.poll()
+        while conn.notifies:
+            notify = conn.notifies.pop(0)
+            logger.info(f"New data received: {notify.payload}")
+            # Send the notification to WebSocket clients
+            await send_to_frontend(notify.payload)
 ```
 
 ## Seed Initial Data

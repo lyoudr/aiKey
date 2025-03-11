@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, HTTPException, status
 import json
 import base64
 
-from src.utils.write_to_db import write_to_db
+from src.services.write_to_db import write_to_db
 
 router = APIRouter(
     tags=["process"], 
