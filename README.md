@@ -9,6 +9,8 @@ To improve data retrieval efficiency, we utilize Redis as a cache.
 
 ## Data Flow
 ![Architecture](https://github.com/lyoudr/aiKey/blob/main/diagram.png)
+
+## Data Display
 ![Architecture](https://github.com/lyoudr/aiKey/blob/main/data.png)
 
 ## Tools Used
